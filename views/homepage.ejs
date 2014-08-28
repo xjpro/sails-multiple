@@ -6,34 +6,33 @@
 	<script>
 		var app = angular.module('test', []);
 		app.controller('TestController', function($scope) {
-		var self = this;
+			var self = this;
 
-		// setup
-		io.socket.post('/pet', {}, function(pet) {
-			io.socket.post('/person', { pet: pet.id }, function(person) {
-				$scope.$apply(function() {
-					self.pet = pet;
-					self.person = person;
+			// setup
+			io.socket.post('/pet', {}, function(pet) {
+				io.socket.post('/person', { pet: pet.id }, function(person) {
+					$scope.$apply(function() {
+						self.pet = pet;
+						self.person = person;
+					});
 				});
 			});
-		});
-
-		this.causeSingle = function() {
-			// send pet as its id, causes single afterUpdate
-			io.socket.put('/person/' + self.person.id, { pet: self.pet.id }, function(data) {
-				$scope.$apply(function() {
-					self.person = data;
+			this.causeSingle = function() {
+				// send pet as its id, causes single afterUpdate
+				io.socket.put('/person/' + self.person.id, { pet: self.pet.id }, function(data) {
+					$scope.$apply(function() {
+						self.person = data;
+					});
 				});
-			});
-		};
-		this.causeMultiple = function() {
-			// send the populated pet data, causes multiple afterUpdates
-			io.socket.put('/person/' + self.person.id, { pet: self.pet }, function(data) {
-				$scope.$apply(function() {
-					self.person = data;
+			};
+			this.causeMultiple = function() {
+				// send the populated pet data, causes multiple afterUpdates
+				io.socket.put('/person/' + self.person.id, { pet: self.pet }, function(data) {
+					$scope.$apply(function() {
+						self.person = data;
+					});
 				});
-			});
-		};
+			};
 		});
 	</script>
 </head>
