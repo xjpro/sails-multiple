@@ -1,0 +1,19 @@
+{
+  "name": "sails-multiple",
+  "version": "0.0.0",
+  "authors": [
+    "Joshua Prodahl <joshua.prodahl@bestbuy.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.2.23",
+    "sails.io.js": "~0.10.3"
+  }
+}

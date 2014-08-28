@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html ng-app="test">
+<head>
+	<script src="/vendor/sails.io.js/dist/sails.io.js"></script>
+	<script src="/vendor/angular/angular.js"></script>
+	<script>
+		var app = angular.module('test', []);
+		app.controller('TestController', function($scope) {
+			var self = this;
+			io.socket.get('/person/1', function(data) {
+				$scope.$apply(function() {
+					self.person = data;
+				});
+			});
+			this.causeSingle = function() {
+				io.socket.put('/person/1', { pet: 2 }, function(data) {
+					$scope.$apply(function() {
+						self.person = data;
+					});
+				});
+			};
+			this.causeMultiple = function() {
+				io.socket.put('/person/1', { pet: { id: 2 } }, function(data) {
+					$scope.$apply(function() {
+						self.person = data;
+					});
+				});
+			};
+		});
+	</script>
+</head>
+<body>
+	<div ng-controller="TestController as test">
+		<p>
+			{{test.person}}
+		</p>
+		<div>
+			<button ng-click="test.causeSingle()">Single</button>
+			<button ng-click="test.causeMultiple()">Multiple</button>
+		</div>
+	</div>
+</body>
+</html>
