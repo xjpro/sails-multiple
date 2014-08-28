@@ -7,20 +7,28 @@
 		var app = angular.module('test', []);
 		app.controller('TestController', function($scope) {
 			var self = this;
-			io.socket.get('/person/1', function(data) {
-				$scope.$apply(function() {
-					self.person = data;
+
+			// setup
+			io.socket.post('/pet', {}, function(pet) {
+				io.socket.post('/person', { pet: pet.id }, function(person) {
+					$scope.$apply(function() {
+						self.pet = pet;
+						self.person = person;
+					});
 				});
 			});
+
 			this.causeSingle = function() {
-				io.socket.put('/person/1', { pet: 2 }, function(data) {
+				// send pet as its id, causes single afterUpdate
+				io.socket.put('/person/1', { pet: self.pet.id }, function(data) {
 					$scope.$apply(function() {
 						self.person = data;
 					});
 				});
 			};
 			this.causeMultiple = function() {
-				io.socket.put('/person/1', { pet: { id: 2 } }, function(data) {
+				// send the populated pet data, causes multiple afterUpdates
+				io.socket.put('/person/1', { pet: self.pet }, function(data) {
 					$scope.$apply(function() {
 						self.person = data;
 					});
@@ -31,9 +39,11 @@
 </head>
 <body>
 	<div ng-controller="TestController as test">
+		<h2>Person</h2>
 		<p>
 			{{test.person}}
 		</p>
+		<h2>Update</h2>
 		<div>
 			<button ng-click="test.causeSingle()">Single</button>
 			<button ng-click="test.causeMultiple()">Multiple</button>
